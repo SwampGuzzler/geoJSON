@@ -1,0 +1,57 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>     
+        <script src="WA_hikes.json"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <h2>JSON to GeoJSON Conversion!</h2>
+        <div id="geo"></div>
+        <script>
+            var data2; 
+            $.ajax({
+              url: 'WA_hikes.json',
+              async: false,
+              dataType: 'json',
+              success: function (response) {
+                // do stuff with response.
+                //console.log(response[0]);
+                data2 = response; 
+                console.log(data2.length);
+              }
+            });
+
+            var data =
+            [
+            {"rating": "2.0", "length": "6.8", "kml": "", "features": "lwed", "name": "Cutthroat Lakes", "lat": "48.0306", "lng": "-121.6637", "elevGain": 2600.0, "id": "cutthroat-lakes", "elevMax": 4180.0}, {"rating": "0.0", "length": null, "kml": "", "features": "vs", "name": "Wenatchee Mountain", "lat": "47.2811", "lng": "-120.4349", "elevGain": null, "id": "wenatchee-mountain", "elevMax": null}
+            ];
+            //console.log(data2[0]);
+            //var data2 = test.json;
+            //console.log(data2);
+            var geoJSON = {};
+            geoJSON.type = "FeatureCollection";
+            geoJSON.features = [];
+
+            for (var i = 0; i < data2.length; i++) {
+                geoJSON.features[i] = {};
+                geoJSON.features[i].type = "Feature";
+                geoJSON.features[i].geometry = {};
+                geoJSON.features[i].geometry.type = "Point";
+                geoJSON.features[i].geometry.coordinates = [];
+                geoJSON.features[i].geometry.coordinates.push(parseFloat(data2[i].lng),parseFloat(data2[i].lat));
+                geoJSON.features[i].properties = {};
+                for (var key in data2[i]) {
+                  if (data2[i].hasOwnProperty(key)) {
+                    geoJSON.features[i].properties[key] = data2[i][key];
+                  }
+                }
+            }
+            console.log('');
+            //console.log("Actual GeoJSON: ");
+            //console.log(JSON.stringify(geoJSON));
+            var geoJSON2 = JSON.stringify(geoJSON);
+            document.getElementById("geo").innerHTML = geoJSON2;
+        </script>
+
+    </body>
+</html>
